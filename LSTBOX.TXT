@@ -1,0 +1,134 @@
+
+Here is an extract from my dialog box procedure that produces a two-column
+list box.
+
+In this example there is only one list box, so I don't have to worry about
+which control is involved.  In this example, a blank is used to separate
+the first and second column.  You could use tabs or any other sort of
+separator character.  You could also draw anything you wanted in the
+list box item, including bit maps, colors, other fonts, etc.
+
+This is not a complete program, of course, but does show the details
+of handling a multi-column list box.
+
+Guy 
+
+----------------------------------------------------------------------
+
+Guy Scharf is an independent consultant specializing in developing
+custom software products for OS/2 using C and data base management
+systems.  He is sysop of the Computer Consultant's Forum on
+CompuServe and an assistant Sysop of the IBMOS2 Forum.
+
+For consulting services or custom software development, please
+contact us.
+
+    Guy Scharf, President
+    Software Architects, Inc.
+    2163 Jardin Drive
+    Mountain View, CA  94040
+    (415) 948-9186
+    (415) 948-1620 (fax)
+    CompuServe: 76702,557
+    Internet: 76702.557@compuserve.com
+
+
+/******************** Dialog Box Procedure ******************************/
+                      
+MRESULT EXPENTRY SelectDlgProc (HWND hwnd, USHORT msg, MPARAM mp1, MPARAM mp2)
+{
+    HPS     hPS;                       /* Handle to the presentation space */
+    FONTMETRICS FontMetrics;           /* Metrics of default font */
+    CHAR    pszItemText[MAX_ITEM_TEXT_LENGTH];
+    CHAR    *s;
+    OWNERITEM FAR *poi;                /* Pointer to owner item structure */
+    RECTL   rcl;                       /* Rectangle for writing */
+    COLOR   clrForeGround;
+    COLOR   clrBackGround;
+
+    switch (msg)
+        {
+        case WM_INITDLG:               /* Initialize the list box */
+
+            FillCfgListBox (hwnd);     /* Fill the list box */
+
+            return (FALSE);
+
+
+        case WM_MEASUREITEM:           /* Measure text height */
+
+            hPS = WinGetPS (hwnd);     /* Get handle to presentation space */
+            GpiQueryFontMetrics (hPS, (LONG) sizeof (FONTMETRICS), 
+                                                              &FontMetrics);
+            WinReleasePS (hPS);        /* Release the presentation space */
+
+            return (FontMetrics.lMaxBaselineExt);
+
+
+        case WM_DRAWITEM:              /* Draw a list box entry */
+
+            poi = mp2;                 /* Get address of owner item */
+
+            if (poi->fsState == TRUE)  /* Is this cell to be highlighted? */
+            {                          /* Yes, use highlight attributes */
+                clrForeGround = SYSCLR_HILITEFOREGROUND;
+                clrBackGround = SYSCLR_HILITEBACKGROUND;
+            }
+            else                       /* No, use normal attributes */
+            {
+                clrForeGround = CLR_NEUTRAL;
+                clrBackGround = CLR_BACKGROUND;
+            }
+
+            WinSendMsg (poi->hwnd,     /* Get item text */
+                        LM_QUERYITEMTEXT, 
+                        (MPARAM) MAKEULONG (poi->idItem, 
+                                            MAX_ITEM_TEXT_LENGTH),
+                        (MPARAM) pszItemText);
+
+            rcl.xLeft   = poi->rclItem.xLeft;  /* Set co-ordinates */
+            rcl.xRight  = poi->rclItem.xRight; /* of rectangle */
+            rcl.yTop    = poi->rclItem.yTop;
+            rcl.yBottom = poi->rclItem.yBottom;
+
+            s = strchr (pszItemText, ' ');  /* Find first blank */
+            if (s)
+                *s = '\0';             /* Terminate first column here */
+
+            WinDrawText (poi->hps,     /* Draw the first column */
+                         -1,           /* Null-terminated string */
+                         pszItemText,  /* File name is here */
+                         &rcl,         /* Rectangle to draw in */
+                         clrForeGround,/* Foreground color */
+                         clrBackGround,/* Background color */
+                         DT_LEFT | DT_VCENTER | DT_ERASERECT);
+
+            if (s)                     /* If there is a second column */
+            {
+                rcl.xLeft = 100;       /* It starts out here */
+                                       /* Spacing calculations could be */
+                                       /* much cleverer than this very */
+                                       /* crude use of an absolute position */
+                                       /* (which is not transportable */
+                                       /* to different display types, as */
+                                       /* between 8514 and VGA) */
+                s++;                   /* Point to beginning of text */
+                WinDrawText (poi->hps, /* Draw the second column */
+                             -1,       /* Also a null-terminated string */
+                             s,        /* File Description */
+                             &rcl,     /* Rectangle to draw in */
+                             clrForeGround,  /* Colors are same as */
+                             clrBackGround,  /* before */
+                             DT_LEFT | DT_VCENTER);
+            }
+
+                /* If fsState || fsStateOld and return TRUE, then */
+                /* control will invert the rectangle -- not what */
+                /* we want.  Tell control not do do anything like that! */
+
+            poi->fsState = poi->fsStateOld = FALSE;
+
+            return (TRUE);         /* Say we did it */
+
+
+... case statements for rest of program ...
