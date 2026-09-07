@@ -1,0 +1,62 @@
+Name:           ListBox_2 (Multi-Column List Box)
+Description:    Code fragment demonstrating a two-column owner-draw list box in OS/2 PM.
+Date:           2026-09-07
+Version:        1.01
+----------------------------
+
+DESCRIPTION
+-----------
+This is a code fragment (not a standalone program) that shows how to implement
+a two-column list box using the LS_OWNERDRAW style in OS/2 Presentation Manager.
+
+When LS_OWNERDRAW is specified, the application must handle:
+  WM_MEASUREITEM  -- return the pixel height of each list box item
+  WM_DRAWITEM     -- draw each item using WinDrawText or GPI calls
+
+The fragment uses a blank character as a column separator within each
+list box item string.  The second column starts at a hard-coded x position
+of 100 pixels (as noted by the original author, a more portable calculation
+would compute the column offset from font metrics).
+
+TECHNIQUE SUMMARY
+-----------------
+1. Add items to the list box as "column1 column2" strings
+   (e.g., WinSendMsg(hwndLB, LM_INSERTITEM, ...))
+2. In WM_MEASUREITEM: query font height via GpiQueryFontMetrics and return
+   lMaxBaselineExt as the item height.
+3. In WM_DRAWITEM: split the item string on the first blank,
+   draw column 1 with DT_ERASERECT, draw column 2 starting at x=100.
+4. Set poi->fsState = poi->fsStateOld = FALSE to suppress the default
+   inversion highlight (the application handles selection color itself).
+
+SOURCE CODE
+-----------
+  src/lstbox2.c   -- extracted and annotated dialog procedure
+
+NOTE: The original code uses the 16-bit PM signature (USHORT msg).
+In 32-bit PM the correct type is ULONG.
+
+
+HISTORY
+----------
+- 1.01 - 2026-09-07
+  Source code extracted from LSTBOX.TXT into src/lstbox2.c.
+  Added standard OS/2 includes, MAX_ITEM_TEXT_LENGTH define, and
+  FillCfgListBox forward declaration.
+  Added WinDefDlgProc default return.
+  Original text preserved in doc/lstbox2.txt.
+
+- 1.0
+  Original code fragment by Guy Scharf, Software Architects, Inc.
+  Published on CompuServe IBMOS2 Forum.
+
+
+LICENSE
+-------
+The 3-Clause BSD License.
+
+
+AUTHORS
+-------
+- Guy Scharf, Software Architects, Inc. (original)
+- Martin Iturbide (2026)

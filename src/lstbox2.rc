@@ -1,0 +1,27 @@
+/*------------------------------------------
+   LSTBOX2.RC -- Resource script
+  ------------------------------------------*/
+
+#define INCL_WIN
+#include <os2.h>
+#include "lstbox2.h"
+
+/* List box styles (wrc preprocessor may not resolve these from headers) */
+#ifndef LS_OWNERDRAW
+#define LS_OWNERDRAW    0x00000004L
+#endif
+#ifndef LS_NOADJUSTPOS
+#define LS_NOADJUSTPOS  0x00000010L
+#endif
+
+DLGTEMPLATE ID_DIALOG LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG "Multi-Column List Box Demo", ID_DIALOG, 10, 10, 260, 160,
+           WS_VISIBLE, FCF_SYSMENU | FCF_TITLEBAR
+    BEGIN
+        CONTROL "", ID_LISTBOX, 5, 22, 250, 130,
+                WC_LISTBOX,
+                LS_OWNERDRAW | LS_NOADJUSTPOS | WS_TABSTOP | WS_VISIBLE
+        DEFPUSHBUTTON "~Close", DID_OK, 105, 4, 50, 14
+    END
+END

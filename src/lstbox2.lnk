@@ -1,0 +1,3 @@
+option description '@#OS2World:1.01#@##1## 07 Sep 2026 00:00:00     ARCAOS-507::::::v1.01@@Multi-Column List Box Demo'
+option heap=32768
+option stack=65536

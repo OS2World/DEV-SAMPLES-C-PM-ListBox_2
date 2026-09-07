@@ -1,0 +1,10 @@
+;------------------------------------------
+; LSTBOX2.DEF module definition file
+;------------------------------------------
+
+NAME lstbox2 WINDOWAPI
+
+DESCRIPTION '@#OS2World:1.01#@##1## 07 Sep 2026 00:00:00     ARCAOS-507::::::v1.01@@Multi-Column List Box Demo'
+
+HEAPSIZE  32768
+STACKSIZE 65536

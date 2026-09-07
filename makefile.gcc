@@ -1,0 +1,28 @@
+# makefile.gcc - GNU make / GCC build for DEV-SAMPLES-C-PM-ListBox_2
+#
+# Tools used:
+#   Compile: gcc (GCC 9.2.0, OS/2 kLIBC)
+#   Link:    wlink via emxomfld
+#   Resource: wrc
+#   Make:    GNU make
+
+SRC = src
+BIN = bin-gcc
+
+all : $(BIN)/lstbox2.exe
+
+$(BIN)/lstbox2.exe : $(BIN)/lstbox2.obj $(SRC)/lstbox2.def $(BIN)/lstbox2.res
+	gcc -Zomf $(BIN)/lstbox2.obj $(SRC)/lstbox2.def -o $(BIN)/lstbox2.exe
+	wrc -q $(BIN)/lstbox2.res $(BIN)/lstbox2.exe
+
+$(BIN)/lstbox2.obj : $(SRC)/lstbox2.c $(SRC)/lstbox2.h | $(BIN)
+	gcc -Wall -Zomf -c -O2 -I$(SRC) $(SRC)/lstbox2.c -o $(BIN)/lstbox2.obj
+
+$(BIN)/lstbox2.res : $(SRC)/lstbox2.rc $(SRC)/lstbox2.h | $(BIN)
+	wrc -r -I$(SRC) $(SRC)/lstbox2.rc -fo=$(BIN)/lstbox2.res
+
+$(BIN) :
+	if not exist $(BIN) md $(BIN)
+
+clean :
+	rm -f $(BIN)/*.obj $(BIN)/*.res $(BIN)/*.exe $(BIN)/*.map
