@@ -2,6 +2,8 @@
 
 Sample PM program demonstrating a two-column owner-draw list box.
 
+![ListBox2 ScreenShot](doc/ListBox2.png)
+
 When `LS_OWNERDRAW` is specified as a list box style, the application must
 provide `WM_MEASUREITEM` and `WM_DRAWITEM` processing.  This sample shows
 how to split each item string on a blank character to render two columns
