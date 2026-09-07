@@ -27,7 +27,6 @@ src/                - Source files
 doc/                - Documentation
   lstbox2.txt       - Original LSTBOX.TXT by Guy Scharf
   lstbox2_notes.txt - Technique notes and history
-img/                - Screenshots
 bin-gcc/            - GCC/kLIBC build output
 bin-wat/            - OpenWatcom build output
 makefile.gcc        - GNU make rules for GCC build
